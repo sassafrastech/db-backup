@@ -1,3 +1,8 @@
+# Usage:
+# A typical cron job might look like this (for hourly backups):
+
+# 0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups "mysqldump -u foo -ppass123 mydb" >> backup.log 2>&1'
+
 #!/usr/bin/env ruby
 require "date"
 require "fileutils"
