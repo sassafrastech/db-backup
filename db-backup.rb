@@ -6,7 +6,7 @@ require "fileutils"
 @db_cmd = ARGV[1]
 
 def backup_dir_for_date(date)
-  "@dir/#{date.strftime('%Y/%m/%d')}"
+  "#{@dir}/#{date.strftime('%Y/%m/%d')}"
 end
 
 def backup_file_list(dir)
