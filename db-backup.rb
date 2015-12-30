@@ -1,6 +1,16 @@
 #!/usr/bin/env ruby
 require "date"
 require "fileutils"
+require "optparse"
+
+options = {
+  dbms: 'mysql',
+}
+OptionParser.new do |opts|
+  opts.banner = "Usage: db-backup.rb [options] target-dir dump-command"
+
+  opts.on("--dbms=DBMS", 'Database management system (defaults to "mysql")') { |a| options[:dbms] = a }
+end.parse!
 
 @dir = ARGV[0]
 @db_cmd = ARGV[1]
