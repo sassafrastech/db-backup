@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
+
+DAYS_TO_KEEP_HOURLY = 7
+DAYS_TO_KEEP_DAILY = 90
+
 require "date"
 require "fileutils"
 require "optparse"
@@ -38,7 +42,7 @@ end
 
 def delete_old_hourly_backups
   i = 1
-  while has_hourly_backups?(dir = backup_dir_for_date(Date.today - 7 - i)) do
+  while has_hourly_backups?(dir = backup_dir_for_date(Date.today - DAYS_TO_KEEP_HOURLY - i)) do
     backup_file_list(dir)[1..-1].each{ |f| FileUtils.rm(f) }
     i += 1
   end
@@ -46,7 +50,9 @@ end
 
 def delete_very_old_daily_backups
   i = 1
-  while Dir.exist?(dir = backup_dir_for_date(Date.today - 90 - i)) do
+  while Dir.exist?(dir = backup_dir_for_date(Date.today - DAYS_TO_KEEP_DAILY - i)) &&
+      # keep one per month (parent dir) (ideally the first of the month)
+      dir.split('/')[-1] != '01' && Dir[File.expand_path('../*', dir)].size > 1 do
     FileUtils.rm_rf(dir)
     i += 1
   end

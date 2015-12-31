@@ -1,5 +1,5 @@
 # db-backup
-Simple Ruby script for doing regular, local DB backups and cleaning out old ones. Keeps hourly backups for a week, daily backups for 90 days.
+Simple Ruby script for doing regular, local DB backups and cleaning out old ones. Keeps hourly backups for a week, daily backups for 90 days, monthly backups forever.
 
 A typical cron job might look like this:
 
