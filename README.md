@@ -12,3 +12,5 @@ Replace *`dump_command`* with a command to dump the desired database to standard
 Examples:
   * `mysqldump -u foo -ppass123 mydb`
   * `mongodump `
+
+Note: The directory passed as the second argument should be empty except for backups created by this script. If not, it may get confused and delete things it shouldn't.

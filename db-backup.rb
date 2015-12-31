@@ -3,24 +3,33 @@ require "date"
 require "fileutils"
 require "optparse"
 
-options = {
-  dbms: 'mysql',
-}
 OptionParser.new do |opts|
-  opts.banner = "Usage: db-backup.rb [options] target-dir dump-command"
+  opts.banner = "Usage: db-backup.rb [options] target-dir [dump-command]"
 
-  opts.on("--dbms=DBMS", 'Database management system (defaults to "mysql")') { |a| options[:dbms] = a }
+  opts.on("--dbms=DBMS", 'Database management system (if not given, second argument is required)') do |a|
+    @dbms = a
+  end
+
+  opts.on("-d", "--db=DATABASE", 'Name of database to backup') do |a|
+    @db = a
+  end
 end.parse!
 
-@dir = ARGV[0]
+raise "Database required" if @dbms && !@db
+@dir = ARGV[0] || raise("Target directory required")
 @db_cmd = ARGV[1]
+raise "Dump command required if DBMS not given" if !@dbms && !@db_cmd
 
 def backup_dir_for_date(date)
   "#{@dir}/#{date.strftime('%Y/%m/%d')}"
 end
 
 def backup_file_list(dir)
-  Dir["#{dir}/*.sql.gz"].sort
+  Dir["#{dir}/*.gz"].sort_by { |f| File.mtime(f) }
+end
+
+def timestamp
+  Time.now.strftime('%Y-%m-%d-%H%M%S')
 end
 
 def has_hourly_backups?(dir)
@@ -45,7 +54,21 @@ end
 
 def create_new_backup
   FileUtils.mkdir_p(dir = backup_dir_for_date(Date.today))
-  `#{@db_cmd} | gzip -c > #{dir}/#{Time.now.strftime('%Y%m%d_%H%M%S')}.sql.gz`
+  FileUtils.cd dir
+  filename = "#{@db}-#{timestamp}"
+
+  case @dbms
+  when nil
+    `#{@db_cmd} | gzip -c > #{timestamp}.sql.gz`
+  when 'mongo'
+    `/usr/bin/env mongodump -h 127.0.0.1 -d #{@db} -o .`
+    # Mongodump names backup directory after db, no choice. Add timestamp before tar-ing.
+    FileUtils.mv @db, filename
+    `tar -czvf #{filename}.tar.gz #{filename}`
+    FileUtils.rm_rf(filename)
+  else
+    raise "DBMS not implemented"
+  end
 end
 
 delete_old_hourly_backups
