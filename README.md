@@ -7,9 +7,16 @@ A typical cron job might look like this:
 0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups "<i>dump_command</i>" >> backup.log 2>&1'
 </pre>
 
-Replace *`dump_command`* with a command to dump the desired database to **standard output**.
+Replace *`dump_command`* with a command to dump the desired database to **standard output**. Example:
 
-Examples:
-  * `mysqldump -u foo -ppass123 mydb`
+```
+mysqldump -u foo -ppass123 mydb
+```
 
-**Note:** The directory passed as the second argument should ideally be empty except for backups created by this script. If not, it may get confused and delete things it shouldn't.
+For mongodb, different arguments are required:
+
+<pre>
+0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups --dbms=mongo -d <i>database_name</i> >> backup.log 2>&1'
+</pre>
+
+**NOTE:** The directory passed as the first argument should ideally be **empty** except for backups created by this script. If not, it may get confused and **delete things it shouldn't**.
