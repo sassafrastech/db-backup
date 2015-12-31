@@ -16,7 +16,10 @@ mysqldump -u foo -ppass123 mydb
 For mongodb, different arguments are required:
 
 <pre>
-0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups --dbms=mongo -d <i>database_name</i> >> backup.log 2>&1'
+0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups --dbms=mongo --db=<i>database_name</i> >> backup.log 2>&1'
 </pre>
 
-**NOTE:** The directory passed as the first argument should ideally be **empty** except for backups created by this script. If not, it may get confused and **delete things it shouldn't**.
+## Notes
+
+  * **IMPORTANT:** The directory passed as the first argument should ideally be **empty** except for backups created by this script. If not, it may get confused and **delete things it shouldn't**.
+  * You may need to specify which ruby to use in the crontab, e.g. by adding `/usr/local/bin/ruby` right before `./db-backup.rb`.
