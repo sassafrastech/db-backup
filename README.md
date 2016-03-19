@@ -3,14 +3,15 @@ Simple Ruby script for doing regular, local DB backups and cleaning out old ones
 
 A typical cron job might look like this:
 
-<pre>
-0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb backups "<i>dump_command</i>" >> backup.log 2>&1'
-</pre>
+```
+0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb ./backups "<dump-command>" >> backup.log 2>&1'
+```
 
 Replace *`dump_command`* with a command to dump the desired database to **standard output**. Example:
 
 ```
 mysqldump -u foo -ppass123 mydb
+PGPASSWORD="pass123" pg_dump mydb
 ```
 
 For mongodb, different arguments are required:
