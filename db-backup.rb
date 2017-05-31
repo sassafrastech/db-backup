@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-DAYS_TO_KEEP_HOURLY = 7
-DAYS_TO_KEEP_DAILY = 90
+DAYS_TO_KEEP_HOURLY = ENV['DAYS_TO_KEEP_HOURLY'] || 7
+DAYS_TO_KEEP_DAILY = ENV['DAYS_TO_KEEP_DAILY'] || 30
 
 require "date"
 require "fileutils"
