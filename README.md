@@ -23,6 +23,10 @@ Replace `X` with the next minute in the hour so the job will run shortly after y
 
 Replace `<dump_commands>` with a command to dump the desired database to **standard output** where it will be captured and saved.
 
+### Explanation
+
+`0 * * * *` specifies how often the job will run -- look at cron documentation for details. The line loads bash, switches to the directory where the db-backup script is, sets optional environment variables, and runs the script, passing in the directory to write the back up to (here `./backups`) and the dump command. Any output is directed to the backup.log file.
+
 ## Examples
 
 ### MySQL
