@@ -65,8 +65,9 @@ def create_new_backup
 
   case @dbms
   when nil
-    full_filename = "#{timestamp}.sql.gz"
-    `#{@db_cmd} | gzip -c > #{full_filename}`
+    full_filename = "#{timestamp}.sql"
+    `#{@db_cmd} > #{full_filename}`
+    `gzip #{full_filename}`
   when 'mongo'
     full_filename = "#{filename}.tar.gz"
     `/usr/bin/env mongodump -h 127.0.0.1 -d #{@db} -o .`
