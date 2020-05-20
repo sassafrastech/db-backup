@@ -3,13 +3,20 @@ Simple Ruby script for doing regular, local DB backups and cleaning out old ones
 
 You can specify retention periods for daily and weekly backups using `DAYS_TO_KEEP_HOURLY` and `DAYS_TO_KEEP_DAILY` env vars.
 
-A typical cron job might look like this:
+```
+sudo su - deploy
+git clone https://github.com/sassafrastech/db-backup.git
+crontab -e
+```
+
+In the crontab, add:
 
 ```
-0 * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb ./backups "<dump-command>" >> backup.log 2>&1'
+<min> * * * * /bin/bash -l -c 'cd $HOME/db-backup; ./db-backup.rb ./backups "<dump-command>" >> backup.log 2>&1'
 ```
+Replace `<min>` with the next minute in the hour so the job will run shortly after you save the crontab. It will subsequently run every hour thereafter at the same minute.
 
-Replace *`dump_command`* with a command to dump the desired database to **standard output**. Example:
+Replace `<dump_command>` with a command to dump the desired database to **standard output**. Example:
 
 ```
 mysqldump -u foo -ppass123 mydb
